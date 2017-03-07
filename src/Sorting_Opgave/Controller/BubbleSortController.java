@@ -1,30 +1,36 @@
 package Sorting_Opgave.Controller;
 
-import Sorting_Opgave.Model.SuperModel;
+import Sorting_Opgave.Model.BubbleSorter;
+import javafx.collections.FXCollections;
 import javafx.scene.chart.BarChart;
 
 /**
  * Created by robin on 3-3-17.
+ * Controller for the Bubblesort. This class performs the required actions for the user input in the BubbleSorter class.
  */
-public class BubbleSortController {
-    private SuperModel superModel;
+public class BubbleSortController{
+    private BubbleSorter bubbleSorter;
 
-    public BubbleSortController(SuperModel sm){
-        superModel = sm;
+    /*constructs new BubbleSortController and creates a new BubbleSorter*/
+    public BubbleSortController(){
+        bubbleSorter = new BubbleSorter();
     }
 
-    public void processOneStep(){
-        //todo process one single step.
-        System.out.println("This button should process a single step in the sorting algoritm");
+    // Lets the BubbleSorter perform one step and updates the barchart.
+    public void processOneStep(BarChart barChart){
+        bubbleSorter.processOneStep();
+        getData(barChart);
     }
 
-    public void processEntireSort(){
-        // todo process the entire sorting algoritm.
-        System.out.println("This button should sort the entire list");
+    // Lets the sorter sort the entire array and updates the barchart.
+    public void processEntireSort(BarChart barChart){
+        bubbleSorter.processEntireSort();
+        getData(barChart);
     }
 
+    // Gets the newest data from the bubbleSorter and displays it in the bargraph.
     public BarChart getData(BarChart barChart){
-        barChart.getData().addAll(superModel.returnData());
+        barChart.setData(FXCollections.observableArrayList(bubbleSorter.returnData()));
         return barChart;
     }
 }
