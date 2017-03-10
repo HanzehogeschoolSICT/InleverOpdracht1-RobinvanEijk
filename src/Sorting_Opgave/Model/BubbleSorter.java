@@ -7,14 +7,11 @@ import javafx.scene.chart.XYChart;
  * Created by robin on 7-3-17.
  */
 public class BubbleSorter extends SuperSorter {
-    private int length;                 // length of the array
-    private int index = 0;              // index keeps track of where in the array we are
     private boolean counting = false;   // If there has been a swap in values, this boolean is set to false so we know we have to loop again.
     private int stepsWithoutSwaps = 0;  // stepsWithoutSwaps is used to count how far in the array we have come without swapping integers
 
     public BubbleSorter(){
         super();
-        length = array.length;
     }
 
     /**
@@ -54,6 +51,7 @@ public class BubbleSorter extends SuperSorter {
      * if the the amount of steps without a swap done is as large as the length of the array. this means all integers are sorted.
      * @return boolean
      */
+    @Override
     public boolean isFinished() {
         return stepsWithoutSwaps == this.length;
     }
@@ -65,19 +63,6 @@ public class BubbleSorter extends SuperSorter {
      */
     public XYChart.Series returnData() {
         XYChart.Series series1 = super.returnData();
-        for (int i = 0; i < length; i++) {
-            XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
-            if (i == index && !isFinished()) {
-                Platform.runLater(() -> {
-                        value.getNode().setStyle("-fx-background-color: blue;");
-                });
-            } else if (isFinished()) {
-                Platform.runLater(() -> {
-                    value.getNode().setStyle("-fx-background-color: green;");
-                });
-            }
-            series1.getData().add(value);
-        }
         return series1;
     }
 }

@@ -21,40 +21,12 @@ public class QuickSortController {
     }
 
     public void processEntireSort(BarChart barChart){
-        Sorter sorter = new Sorter(barChart);
-        sorter.start();
+        SorterThread sorterThread = new SorterThread(barChart, quickSorter);
+        sorterThread.start();
     }
 
     public BarChart getData(BarChart barChart){
         barChart.setData(FXCollections.observableArrayList(quickSorter.returnData()));
         return barChart;
-    }
-
-    private class Sorter extends Thread {
-        private  boolean running = true;
-        private BarChart barChart;
-
-        private Sorter(BarChart barChart){this.barChart = barChart; }
-
-        @Override
-        public void run() {
-            while (!quickSorter.isFinished()) {
-                while (!running) {
-                    yield();
-                }
-
-                quickSorter.processOneStep();
-                Platform.runLater(() -> {
-                    getData(barChart);
-                });
-
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }

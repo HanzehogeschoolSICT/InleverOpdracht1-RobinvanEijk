@@ -7,12 +7,9 @@ import javafx.scene.chart.XYChart;
  * Created by robin on 7-3-17.
  */
 public class InsertionSorter extends SuperSorter {
-    private int length;         //the lenght of the array
-    private int index = 0;    //where we are in the array (for the purpose of visualisation we start at index 0;
 
     public InsertionSorter(){
         super();
-        length = array.length;
     }
 
     public void processOneStep(){
@@ -33,36 +30,9 @@ public class InsertionSorter extends SuperSorter {
         }
     }
 
-
-
+    @Override
     public boolean isFinished() {
         return index == length;
     }
-
-    /**
-     * Creates the bars for the barchart from the array.
-     * And gives them their correct collour according to the index and isFinished()
-     * @return XYChart.Series
-     */
-    public XYChart.Series returnData() {
-        XYChart.Series series1 = super.returnData();
-        for (int i = 0; i < length; i++) {
-            XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
-            if (i == index && !isFinished()) {
-                // The index should be colored blue.
-                Platform.runLater(() -> {
-                    value.getNode().setStyle("-fx-background-color: blue;");
-                });
-            } else if (isFinished()){
-                // If the algorithm is finished the values should be green.
-                Platform.runLater(() -> {
-                    value.getNode().setStyle("-fx-background-color: green;");
-                });
-            }
-            series1.getData().add(value);
-        }
-        return series1;
-    }
-
 }
 

@@ -44,6 +44,7 @@ public class QuickSorter extends SuperSorter {
      * And gives them their correct collour according to the index and isFinished()
      * @return XYChart.Series
      */
+    @Override
     public XYChart.Series returnData() {
         XYChart.Series series1 = super.returnData();
         for (int i = 0; i < length; i++) {
