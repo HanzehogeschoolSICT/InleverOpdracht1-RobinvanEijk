@@ -24,5 +24,6 @@ public class SuperSorter {
         XYChart.Series series1 = new XYChart.Series();
         series1.setName("Unsorted list");
         return series1;
+
     }
 }

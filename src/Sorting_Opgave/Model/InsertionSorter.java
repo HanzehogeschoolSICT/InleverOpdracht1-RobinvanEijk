@@ -39,28 +39,27 @@ public class InsertionSorter extends SuperSorter {
         return index == length;
     }
 
+    /**
+     * Creates the bars for the barchart from the array.
+     * And gives them their correct collour according to the index and isFinished()
+     * @return XYChart.Series
+     */
     public XYChart.Series returnData() {
         XYChart.Series series1 = super.returnData();
         for (int i = 0; i < length; i++) {
+            XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
             if (i == index && !isFinished()) {
-                // the index should be colored blue
-                XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
+                // The index should be colored blue.
                 Platform.runLater(() -> {
                     value.getNode().setStyle("-fx-background-color: blue;");
                 });
-                series1.getData().add(value);
-            } else if (!isFinished()) {
-                // values other than the index should be the standard colour.
-                XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
-                series1.getData().add(value);
-            } else {
-                //once done the values should be completely green.
-                XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
+            } else if (isFinished()){
+                // If the algorithm is finished the values should be green.
                 Platform.runLater(() -> {
                     value.getNode().setStyle("-fx-background-color: green;");
                 });
-                series1.getData().add(value);
             }
+            series1.getData().add(value);
         }
         return series1;
     }

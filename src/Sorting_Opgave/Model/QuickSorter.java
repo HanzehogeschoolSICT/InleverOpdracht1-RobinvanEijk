@@ -7,6 +7,7 @@ import java.util.concurrent.Semaphore;
 
 /**
  * Created by robin on 10-3-17.
+ * this Class has the quicksort algorithm implemented inside a thread.
  */
 public class QuickSorter extends SuperSorter {
     private int length;
@@ -31,36 +32,41 @@ public class QuickSorter extends SuperSorter {
 
     }
 
+    /**
+     * @return isFinished
+     */
     public boolean isFinished(){
         return isFinished;
     }
 
+    /**
+     * Creates the bars for the barchart from the array.
+     * And gives them their correct collour according to the index and isFinished()
+     * @return XYChart.Series
+     */
     public XYChart.Series returnData() {
         XYChart.Series series1 = super.returnData();
         for (int i = 0; i < length; i++) {
+            XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
             if (i == indexLeft && !isFinished() || i == indexRight && !isFinished()) {
                 //the indexes should be blue
-                XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
                 Platform.runLater(() -> {
                     value.getNode().setStyle("-fx-background-color: blue;");
                 });
-                series1.getData().add(value);
-            } else if (!isFinished()) {
-                // the remaining values should be the standard colour.
-                XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
-                series1.getData().add(value);
-            } else {
+            } else if (isFinished()){
                 //once finished all values should be green.
-                XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
                 Platform.runLater(() -> {
                     value.getNode().setStyle("-fx-background-color: green;");
                 });
-                series1.getData().add(value);
             }
+            series1.getData().add(value);
         }
         return series1;
     }
 
+    /**
+     * This class is a Thread which is able to run the quicksort algorithm.
+     */
     private class QuickSorterThread extends Thread {
 
         @Override
@@ -74,12 +80,16 @@ public class QuickSorter extends SuperSorter {
             }
         }
 
-
-        //This is an implementation of the algorithm from http://www.vogella.com/tutorials/JavaAlgorithmsQuicksort/article.html
-
-        //I have made use of semaphores to be able to let the algorithm execute step by step.
-        //Each time the indexes change i acquire a semaphore so that the indexes stay displayed until the next step unlocks the semaphore and makes it continue.
-        //This takes away the potential of quicksort to be very fast however it does give the ability to sort of visualize the algorithm.
+        /**
+         * This is an implementation of the algorithm from http://www.vogella.com/tutorials/JavaAlgorithmsQuicksort/article.html
+         *
+         * I have made use of semaphores to be able to let the algorithm execute step by step.
+         * Each time the indexes change i acquire a semaphore so that the indexes stay displayed until the next step unlocks the semaphore and makes it continue.
+         * This takes away the potential of quicksort to be very fast however it does give the ability to sort of visualize the algorithm.
+         * @param low
+         * @param high
+         * @throws InterruptedException
+         */
         private void quickSort(int low, int high) throws InterruptedException {
             int i = low, j = high;
             // Get the pivot element from the middle of the list
@@ -105,17 +115,11 @@ public class QuickSorter extends SuperSorter {
                     semaphore.acquire();
                 }
 
-                // If we have found a values in the left list which is larger then
-                // the pivot element and if we have found a value in the right list
-                // which is smaller then the pivot element then we exchange the
-                // values.
-                // As we are done we can increase i and j
                 if (i <= j) {
-                    exchange(i, j);
+                    swap(i, j);
                     i++;
-                    indexLeft = i;
-                    semaphore.acquire();
                     j--;
+                    indexLeft = i;
                     indexRight = j;
                     semaphore.acquire();
                 }
@@ -127,7 +131,12 @@ public class QuickSorter extends SuperSorter {
                 quickSort(i, high);
         }
 
-        private void exchange(int i, int j) {
+        /**
+         * swaps two values inside an array
+         * @param i
+         * @param j
+         */
+        private void swap(int i, int j) {
             int temp = array[i];
             array[i] = array[j];
             array[j] = temp;
