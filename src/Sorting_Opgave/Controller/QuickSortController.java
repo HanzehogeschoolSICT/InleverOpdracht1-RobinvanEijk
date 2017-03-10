@@ -1,37 +1,32 @@
 package Sorting_Opgave.Controller;
 
-import Sorting_Opgave.Model.BubbleSorter;
+import Sorting_Opgave.Model.QuickSorter;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.chart.BarChart;
 
 /**
- * Created by robin on 3-3-17.
- * Controller for the Bubblesort. This class performs the required actions for the user input in the BubbleSorter class.
+ * Created by robin on 10-3-17.
  */
-public class BubbleSortController{
-    private BubbleSorter bubbleSorter;
+public class QuickSortController {
+    private QuickSorter quickSorter;
 
-    /*constructs new BubbleSortController and creates a new BubbleSorter*/
-    public BubbleSortController(){
-        bubbleSorter = new BubbleSorter();
+    public QuickSortController(){
+        quickSorter = new QuickSorter();
     }
 
-    // Lets the BubbleSorter perform one step and updates the barchart.
     public void processOneStep(BarChart barChart){
-        bubbleSorter.processOneStep();
+        quickSorter.processOneStep();
         getData(barChart);
     }
 
-    // Lets the sorter sort the entire array and updates the barchart.
     public void processEntireSort(BarChart barChart){
         Sorter sorter = new Sorter(barChart);
         sorter.start();
     }
 
-    // Gets the newest data from the bubbleSorter and displays it in the bargraph.
     public BarChart getData(BarChart barChart){
-        barChart.setData(FXCollections.observableArrayList(bubbleSorter.returnData()));
+        barChart.setData(FXCollections.observableArrayList(quickSorter.returnData()));
         return barChart;
     }
 
@@ -43,12 +38,12 @@ public class BubbleSortController{
 
         @Override
         public void run() {
-            while (!bubbleSorter.isFinished()) {
+            while (!quickSorter.isFinished()) {
                 while (!running) {
                     yield();
                 }
 
-                bubbleSorter.processOneStep();
+                quickSorter.processOneStep();
                 Platform.runLater(() -> {
                     getData(barChart);
                 });

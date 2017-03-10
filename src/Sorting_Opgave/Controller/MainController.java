@@ -2,6 +2,7 @@ package Sorting_Opgave.Controller;
 
 import Sorting_Opgave.View.BubbleSortView;
 import Sorting_Opgave.View.InsertionSortView;
+import Sorting_Opgave.View.Quicksortview;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
@@ -11,7 +12,7 @@ import javafx.stage.Stage;
  * Created by robin on 3-3-17.
  * Class which launches the primarystage for the application
  */
-public class SuperController extends Application {
+public class MainController extends Application {
 
     /**
      * This method can be called from a main method to run the Application.
@@ -28,7 +29,7 @@ public class SuperController extends Application {
         primarystage.setTitle("Sorting examples");
         TabPane tabPane = new TabPane();
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        tabPane.getTabs().addAll(new BubbleSortView(),new InsertionSortView());
+        tabPane.getTabs().addAll(new BubbleSortView(),new InsertionSortView(),new Quicksortview());
         primarystage.setScene(new Scene(tabPane,600,500));
         primarystage.show();
     }

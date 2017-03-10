@@ -7,10 +7,10 @@ import javafx.scene.chart.XYChart;
  * Created by robin on 7-3-17.
  */
 public class BubbleSorter extends SuperSorter {
-    private boolean counting = false;   // keeps track if there has been a swap
-    private int noSwaps = 0;            // noSwaps is used to count how far in the array we have come without swapping integers
     private int length;                 // length of the array
-    private int pointer = 0;            // pointer keeps track of where in the array we are
+    private int index = 0;              // index keeps track of where in the array we are
+    private boolean counting = false;   // If there has been a swap in values, this boolean is set to false so we know we have to loop again.
+    private int stepsWithoutSwaps = 0;  // stepsWithoutSwaps is used to count how far in the array we have come without swapping integers
 
     public BubbleSorter(){
         super();
@@ -21,65 +21,63 @@ public class BubbleSorter extends SuperSorter {
      * performs a single step in the bubblesorting algorithm each time the +1 button is pressed. And updates the barchart
      */
     public void processOneStep(){
+        //this algorithm is built using pseudocode from: https://en.wikipedia.org/wiki/Bubble_sort
         if (!isFinished()) {
-            if (array[pointer] > array[pointer + 1]) {
-                // there is a lower number after the number on this index so we need to swap.
+            //check if the value after the current value is lower
+            if (array[index] > array[index + 1]) {
+                //if true we need to swap.
                 counting = false;
-                noSwaps = 0;
+                stepsWithoutSwaps = 0;
 
-                int swap = array[pointer];
-                array[pointer] = array[pointer + 1];
-                array[pointer + 1] = swap;
+                //swap the two values.
+                int swap = array[index];
+                array[index] = array[index + 1];
+                array[index + 1] = swap;
             } else {
-                if (!counting && pointer == 0)
-                    counting = true; // start counting, because we had a no-swap at index 0
-
+                //if we start at index 0 and we dont have to swap we can start counting the amount of steps.
+                if (!counting && index == 0)
+                    counting = true;
                 if (counting)
-                    noSwaps++;
+                    stepsWithoutSwaps++;
             }
-
-            pointer++;
-            if (pointer == this.length - 1)
-                pointer = 0; // reset pointer to the start
+            //After the current value has been checked we increment the pointer
+            index++;
+            //if the index is as high as the length of the array we start the loop again.
+            if (index == this.length - 1)
+                index = 0;
         } else {
-            pointer = 0;
+            index = 0;
         }
     }
 
     /**
-     * if the the amount of noSwaps done is as large as the length of the array. this means all integers are sorted.
+     * if the the amount of steps without a swap done is as large as the length of the array. this means all integers are sorted.
      * @return boolean
      */
     public boolean isFinished() {
-        return noSwaps == this.length;
-    }
-
-    public void processEntireSort() {
-        for (int i = 0; i < array.length; i++) {
-            for (int j = i + 1; j < array.length; j++) {
-                if (array[i] > array[j]) {
-                    int temp = array[i];
-                    array[i] = array[j];
-                    array[j] = temp;
-                }
-            }
-        }
+        return stepsWithoutSwaps == this.length;
     }
 
     public XYChart.Series returnData() {
         XYChart.Series series1 = super.returnData();
-        for (int i = 0; i < array.length; i++) {
-            if (i == pointer && !isFinished()) {
+        for (int i = 0; i < length; i++) {
+            if (i == index && !isFinished()) {
+                //the index should be blue
                 XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
+                Platform.runLater(() -> {
                         value.getNode().setStyle("-fx-background-color: blue;");
-                    }
                 });
                 series1.getData().add(value);
-            } else {
+            } else if (!isFinished()) {
+                //the other values should be the standard colour.
                 XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
+                series1.getData().add(value);
+            } else {
+                //once finished the values should all be green.
+                XYChart.Data<String, Integer> value = new XYChart.Data<>(i + 1 + "", array[i]);
+                Platform.runLater(() -> {
+                    value.getNode().setStyle("-fx-background-color: green;");
+                });
                 series1.getData().add(value);
             }
 

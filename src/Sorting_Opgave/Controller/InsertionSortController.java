@@ -1,6 +1,7 @@
 package Sorting_Opgave.Controller;
 
 import Sorting_Opgave.Model.InsertionSorter;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.chart.BarChart;
 
@@ -32,8 +33,8 @@ public class InsertionSortController {
      * @param barChart
      */
     public void processEntireSort(BarChart barChart){
-        insertionSorter.processEntireSort();
-        getData(barChart);
+        Sorter sorter = new Sorter(barChart);
+        sorter.start();
     }
 
     public BarChart getData(BarChart barChart){
@@ -41,4 +42,31 @@ public class InsertionSortController {
         return barChart;
     }
 
+    private class Sorter extends Thread {
+        private  boolean running = true;
+        private BarChart barChart;
+
+        private Sorter(BarChart barChart){this.barChart = barChart; }
+
+        @Override
+        public void run() {
+            while (!insertionSorter.isFinished()) {
+                while (!running) {
+                    yield();
+                }
+
+                insertionSorter.processOneStep();
+                Platform.runLater(() -> {
+                    getData(barChart);
+                });
+
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
